@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script type="text/x-template" id="race-template">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="panel" 
+                v-bind:class="{
+                'panel-success': item.nextToGo,
+                'panel-default': moment(item.raceStartTime).isAfter(datetime),
+                'panel-danger': moment(item.raceStartTime).isSameOrBefore(datetime)}">
+                <div class="panel-heading">
+                    <h3 class="panel-title">{{ item.meeting.meetingName }} ({{  item.meeting.location }}) </h3>
+                    <small>{{ item.raceName }}</small>                        
+                </div>
+                <div class="panel-body">
+                    {{ item.meeting.raceType }}{{item.raceNumber}}
+                    <span v-if="moment(item.raceStartTime).isAfter(moment(datetime).add(59, 'seconds'))">
+                        Starts {{moment(item.raceStartTime).fromNow()}}
+                    </span>
+                    <span v-if="moment(item.raceStartTime).isBetween(moment(datetime), moment(datetime).add(1, 'minute'))">
+                        Starts in {{ moment.duration(moment(item.raceStartTime) - moment(datetime)).as('seconds') }} seconds
+                    </span>
+                    <span v-if="moment(item.raceStartTime).isSameOrBefore(datetime)">
+                        Started {{ moment.duration(moment(datetime) - moment(item.raceStartTime)).as('seconds') }} seconds ago
+                    </span>
+                </div>
+            </div>
+        </div>
+    </script>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid"> 
+            <div class="navbar-header">
+                <a class="navbar-brand" href="" v-on:click="refreshNextToGoRaces">Next To Go</a>
+            </div>
+        </div>
+    </nav>
+        
+    <div id="racesWidget">
+        {{timeToRefresh}}
+        <div class="container-fluid"> 
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Racing</h3>
+                    <race-component
+                        v-for="(item, index) in horses"
+                        v-bind:item="item"
+                        v-bind:key="item.raceStartTime"
+                        v-bind:datetime="datetime">
+                    </race-component>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Greyhounds</h3>
+                    <race-component
+                        v-for="(item, index) in greyhounds"
+                        v-bind:item="item"
+                        v-bind:key="item.raceStartTime"
+                        v-bind:datetime="datetime">
+                    </race-component>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Harness</h3>
+                    <race-component
+                        v-for="(item, index) in harness"
+                        v-bind:item="item"
+                        v-bind:key="item.raceStartTime"
+                        v-bind:datetime="datetime">
+                    </race-component>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../node_modules/moment/moment.js"></script>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css"></link>
+    <script src="./index.js"></script>
+</html>
